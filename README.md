@@ -1,4 +1,4 @@
-Blockchain Medical System Blockchain
+Blockchain Medical System
 
 The Blockchain Medical System Blockchain is about removing the middleman and enhance the privacy and confidentiality involved in medical privacy transactional activities within healthcare space. The inherent privacy and security offered by blockchain allows patients retain certain level of granular control and confidential records cannot be transferred between professionals without their absolute consent. Patient confidentiality can be maintained much more effectively thus offering greater scope for them privately accessing medical support.
 
