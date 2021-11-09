@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.3;
+pragma solidity ^0.8.5;
 
 contract BMS {
 
   // Medical Staffs/Patient will have to register themselves somehow on the contract
-	function registerUser(address _user) {
+	function registerUser(address _user) public {
 
 		// registers user
 
@@ -28,7 +28,7 @@ contract BMS {
 	}
 
 //4. Patient can authorize 3rd party access to securely access to the medical data.
-function signMedicalData(){
+function signMedicalData() public{
   // 1. it should Create a SHA3 hash of the message
   // 2. Verify that the message's signer is the owner of the medical data
 	// 3. Signs the messageHash with the Hospital account
@@ -36,7 +36,7 @@ function signMedicalData(){
 }
 
 //5. Verify the authenticity of the medical record using digital signature that uniquely identifies the issuer of the record.
-function verify() {
+function verify() public {
   // 1. it should recover signer address from a message by using their signature
   // 2. Recover signer from signature and hash
   // 3. Compare recovered signer to claimed signer
