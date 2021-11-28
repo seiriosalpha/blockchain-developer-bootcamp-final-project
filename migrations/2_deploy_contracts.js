@@ -1,4 +1,5 @@
-var BMS = artifacts.require('./BMS.sol')
+const BMS = artifacts.require('BMS')
+
 module.exports = function (deployer) {
-  deployer.deploy(BMS)
+  deployer.deploy(BMS, 'meow')
 }

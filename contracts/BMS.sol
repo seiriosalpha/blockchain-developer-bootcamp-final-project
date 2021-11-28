@@ -1,58 +1,225 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.5;
+/// SPDX-License-Identifier: MIT
 
-contract BMS {
+/** 
+Specifies the version of Solidity, using semantic versioning.
+Lock pragmas to specific compiler version - #SWC-103
+*/
+pragma solidity 0.8.5;
 
-  // Medical Staffs/Patient will have to register themselves somehow on the contract
-	function registerUser(address _user) public {
-
-		// registers user
-
-	}
-
-//2. Medical Staffs can upload or edit the medical data.
-  function addMedicalData(string memory _name) public returns (bool) {
-		// 1. Create a new Patient data and put in array
-    // 2. Increment the ID by one
-    // 3. Emit the appropriate event
-    // 4. return true
-	}
-
-//3. Medical Staffs/Patient have to identify themselves in order to securely access to the medical data.
-  function medicalData(uint sku) public {
-  // 1. Add modifiers to check:
-  //    - the person calling this function is the Staffs/Patient. 
-	// 2. call the event associated with this function!
-	// 3. Present the data to user if user is Staff
-	// 4. Present the data to user if payment has been completed
-	}
-
-//4. Patient can authorize 3rd party access to securely access to the medical data.
-function signMedicalData() public{
-  // 1. it should Create a SHA3 hash of the message
-  // 2. Verify that the message's signer is the owner of the medical data
-	// 3. Signs the messageHash with the Hospital account
-  // 4. set the state to Signed. 
+/** Defines an interface named `MyInterface`.
+*/
+interface MyInterface {
+    function getAmt() external view returns (uint256);
 }
 
-//5. Verify the authenticity of the medical record using digital signature that uniquely identifies the issuer of the record.
-function verify() public {
-  // 1. it should recover signer address from a message by using their signature
-  // 2. Recover signer from signature and hash
-  // 3. Compare recovered signer to claimed signer
+/** Defines a contract named `BMS`.
+Explicitly mark visibility in functions and state variables - #SWC-100 & #SWC-108
+*/
+contract BMS{
+
+  /// Hint: We want to protect our users balance from other contracts
+  mapping (address => uint256) private balances;
+   
+	 /** Declares a state variable `message` of type `string`.
+   State variables are variables whose values are permanently stored in contract storage. The keyword `public` makes variables accessible from outside a contract and creates a function that other contracts or clients can call to access the value.
+   */
+  uint public orderCount = 0;
+  mapping(uint => Order) private orders;
+
+  uint public ServiceCount = 0;
+  mapping(uint => Service) public services;
+
+  uint public userCount = 0;
+  mapping(address => User) public users;
+
+    /// <owner>
+  address private owner = msg.sender;
+
+  string public message;
+    
+  uint256 public TotalAmt;
+    
+  bool private lock;
+
+  struct Order {
+        uint oid;
+        address payable seller;
+        address payable buyer;
+        string status;
+        uint pid;
+        uint quantitiy;
+  }
+
+  struct Service {
+        uint pid;
+        string name;
+        uint price;
+        address payable staff;
+        string info;
+        uint quantity;
+  }
+
+  struct User {
+        uint uid;
+        string name;
+        uint role;
+        address user;
+        bool created;
+  }
+
+	/** Emitted when update function is called
+   Smart contract events are a way for your contract to communicate that something happened on the blockchain to your app front-end, which can be 'listening' for certain events and take action when they happen.
+   */
+
+  event ServiceCreated(
+        uint pid,
+        string name,
+        uint price,
+        address staff,
+        string info,
+        uint quantity
+  );
+
+  event  UserCreated(
+        uint uid,
+        string name,
+        uint role,
+        address user,
+        bool created
+  );
+
+  event ServicePurchased(
+        uint oid,
+        address payable seller,
+        address payable buyer,
+        string status,
+        uint pid,
+        uint quantity
+  );
+
+  event UpdatedMessages(
+				string oldStr,
+				string newStr
+	);
+
+  event UpdatedAmt(
+				uint256 oldAmt, 
+				uint256 newAmt
+	);
+
+  /** Emitted when update function is called
+	Add 2 arguments for this event, an accountAddress and an amount
+	*/
+  //event LogDepositMade(address accountAddress, uint256 amount);
+
+	// Similar to many class-based object-oriented languages, a constructor is a special function that is only executed upon contract creation.
+  constructor(string memory initMessage) {
+      
+	/// Accepts a string argument `initMessage` and sets the value into the contract's `message` storage variable).
+      message = initMessage;
+      TotalAmt = 0;
+  }
+	
+	/**
+  Using modifiers only for check for only Owner Functions
+  */
+	modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can register a user.");
+        _;
+  }
+
+	/** 
+	Fallback function - Called if other functions don't match call or
+  sent ether without data
+  Typically, called when invalid data is sent
+  Added so ether sent to this contract is reverted if the contract fails
+  otherwise, the sender's money is transferred to contract
+	*/
+  receive() external payable {
+		revert();
+  }
+
+  function setAmt(uint256 newAmt) public returns(bool) {
+        uint256 oldAmt = TotalAmt;
+        TotalAmt = newAmt;
+        emit UpdatedAmt(oldAmt, newAmt);
+        return true;
+  }
+
+  function getAmt() public view returns (uint256) {
+        //uint256 surchargefees = 10;
+        //uint256 finalamt = TotalAmt + surchargefees;
+        return TotalAmt;
+  }
+   
+	 /// A public function that accepts a string argument and updates the `message` storage variable.
+  function update(string memory newMessage) public onlyOwner {
+      string memory oldMsg = message;
+      message = newMessage;
+      emit UpdatedMessages(oldMsg, newMessage);
+  }
+
+/**
+Checks-Effects-Interactions Pattern - #SWC-107
+*/
+  function createUser(string memory _name, uint _role) public {
+        ///No repeated address
+        require(users[msg.sender].created == false, 'User already created');
+        ///Increase userCount
+        userCount++;
+        ///Add user
+        users[msg.sender] = User(userCount, _name, _role, msg.sender, true);
+        ///Trigger an event
+        emit UserCreated(userCount, _name, _role, msg.sender, true);
+  }
+
+  function createService(string memory _name, uint _price, string memory _info, uint _quantity) public onlyOwner{
+        /// Require a valid price
+        require(_price > 0, 'Invalid Price');
+        /// Increment product count
+        ServiceCount ++;
+        /// Create the product
+        services[ServiceCount] = Service(ServiceCount, _name, _price, payable(msg.sender), _info, _quantity);
+        /// Trigger an event
+        emit ServiceCreated(ServiceCount, _name, _price, msg.sender, _info, _quantity);
+  }
+
+	function purchaseService(uint _id, uint _quantity) public payable {
+        /// Fetch the product
+        Service memory _service = services[_id];
+        /// Fetch the owner
+        address payable _staff = _service.staff;
+        /// Validate the buyer
+        require(users[msg.sender].created == true, 'Unregistered user');
+        /// Make sure the product has a valid id
+        require(_service.pid > 0 && _service.pid <= ServiceCount, 'Invalid Product ID');
+        /// Require that there is enough Ether in the transaction
+        require(msg.value >= _service.price, 'Not enough ether in Wallet');
+        /// Require that the buyer is not the seller
+        require(_staff != msg.sender,'Invalid Purchase');
+        /// Incrmement orderCount
+        orderCount++;
+        /// Reduce the quantity of the product
+        services[_id].quantity =  _service.quantity - 1;
+        /// Transfer ownership to the buyer
+        orders[orderCount] = Order(orderCount, _staff, payable(msg.sender),  'Ordered', _service.pid, _quantity);
+        /// Pay the contract by sending them Ether
+        payable(msg.sender).transfer(msg.value);
+        /// Trigger an event
+        emit ServicePurchased(orderCount, _staff, payable(msg.sender), 'Ordered', _service.pid, _quantity);
+  }
+
+/**
+     /// Conforms to checks-effects-interactions pattern to protect against #SWC-107 - Reentrancy
+    function transfer(address addr, uint amount) external {
+    require(!lock);
+    lock = true;
+    if (balances[msg.sender] >= amount) {
+        balances[addr] += amount;
+        balances[msg.sender] -= amount;
+    }
+    lock = false;
+    }
+*/
 }
 
-//6. Medical bills payment can be issued by the Medical Staffs and paid in cryptocurrency by the Patient.
-  function Payment(uint sku) public payable {
-  // 1. it should be payable in order to receive refunds
-  // 2. this should transfer money to the Hospital, 
-  // 3. set the payer as the person who called this transaction, 
-  // 4. set the state to Paid. 
-  // 5. this function should use 3 modifiers to check 
-  //    - if the Bill is pending payment, 
-  //    - if the payer paid enough, 
-  //    - check the value after the function is called to make 
-  //      sure the buyer is refunded any excess ether sent. 
-  // 6. call the event associated with this function!
-	}
-}

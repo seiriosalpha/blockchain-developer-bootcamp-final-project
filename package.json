@@ -1,26 +1,41 @@
 {
-  "name": "blockchain-developer-bootcamp-final-project",
-  "version": "1.0.0",
-  "description": "Blockchain Medical System",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project/issues"
-  },
-  "homepage": "https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project#readme",
+  "name": "bms",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@truffle/hdwallet-provider": "^1.6.0",
-    "dotenv": "^10.0.0",
-    "save": "^2.4.0",
-    "solc": "^0.8.9",
-    "web3": "^1.6.0"
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "dotenv": "^9.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "truffle-assertions": "^0.9.2",
+    "web-vitals": "^1.0.1",
+    "web3": "1.2.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
