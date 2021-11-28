@@ -1,9 +1,6 @@
 /// SPDX-License-Identifier: MIT
+/// Commented to the specs described by NatSpec Solidity documentation
 
-/** 
-Specifies the version of Solidity, using semantic versioning.
-Lock pragmas to specific compiler version - #SWC-103
-*/
 pragma solidity 0.8.5;
 
 /** Defines an interface named `MyInterface`.
@@ -12,9 +9,7 @@ interface MyInterface {
     function getAmt() external view returns (uint256);
 }
 
-/** Defines a contract named `BMS`.
-Explicitly mark visibility in functions and state variables - #SWC-100 & #SWC-108
-*/
+/// Defines a contract named `BMS`.
 contract BMS{
 
   /// Hint: We want to protect our users balance from other contracts
@@ -159,9 +154,6 @@ contract BMS{
       emit UpdatedMessages(oldMsg, newMessage);
   }
 
-/**
-Checks-Effects-Interactions Pattern - #SWC-107
-*/
   function createUser(string memory _name, uint _role) public {
         ///No repeated address
         require(users[msg.sender].created == false, 'User already created');
@@ -222,4 +214,3 @@ Checks-Effects-Interactions Pattern - #SWC-107
     }
 */
 }
-
