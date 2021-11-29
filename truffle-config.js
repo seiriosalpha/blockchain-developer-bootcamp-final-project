@@ -1,16 +1,21 @@
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+require('dotenv').config();
 const path = require('path');
+const { API_URL, MNEMONIC } = process.env;
+
 module.exports = {
   contracts_build_directory: path.join(__dirname, '/src/contracts'),
   networks: {
-    develop: {
+    test: {
       host: '127.0.0.1',
       port: 7545,
       network_id: '*'
     },
-    loc_development_development: {
-      network_id: "*",
-      port: 7545,
-      host: "127.0.0.1"
+    rinkeby: {
+      provider: function() {
+        return new HDWalletProvider(MNEMONIC, API_URL)
+      },
+      network_id: '*'
     }
   },
   mocha: {},

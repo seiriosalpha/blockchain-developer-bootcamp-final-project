@@ -1,14 +1,18 @@
 import BMS from '../contracts/BMS.json'
 import getWeb3 from './getWeb3'
+
+const path = require('path')
 require('dotenv').config()
-//const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-//const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
-//const web3 = createAlchemyWeb3(alchemyKey);
 
 //Connecting to local blockchain using web3 and HttpProvider
+//var Web3 = require('web3')
+//var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+//const contractAddress = '';
+
+//Connecting to rinkby blockchain using web3 and Infura HttpProvider
 var Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-const contractAddress = '0xb1EF62F80c079F9f57084e60E763D991866e5bB9'
+var web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/eb1a323474bd4445be64173b46393e40'))
+const contractAddress = '0x1d90da6E3c7382a80bb3391A8e41B8A436f76ADC';
 
 //Load the smart contract
 export const BMSContract = new web3.eth.Contract(BMS.abi, contractAddress)
@@ -145,7 +149,7 @@ export const RegisterUser = async (address, regName, regRole) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://ropsten.etherscan.io/tx/${txHash}`}>
+          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -201,7 +205,7 @@ export const CreateService = async (address, servicename, price, info, qty) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://ropsten.etherscan.io/tx/${txHash}`}>
+          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -250,7 +254,7 @@ export const updateMessage = async (address, message) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://ropsten.etherscan.io/tx/${txHash}`}>
+          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
             View the status of your transaction on Etherscan!
           </a>
           <br />
