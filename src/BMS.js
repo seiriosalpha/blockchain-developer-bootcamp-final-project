@@ -5,8 +5,10 @@ import {
   connectWallet,
   updateMessage,
   RegisterUser,
-  CheckUser,
+  ApproveUser,
   CreateService,
+  BuyService,
+  loadServicePrice,
   loadCurrentMessage,
   getCurrentWalletConnected,
 } from './util/interact.js'
@@ -20,12 +22,14 @@ const BMS = () => {
   const [message, setMessage] = useState('No connection to the network.') //default message
   const [newMessage, setNewMessage] = useState('')
   const [regName, RegisterName] = useState('')
-  const [regRole, RegisterRole] = useState('')
   const [userAdd, SetUserAdd] = useState('')
   const [serviceName, RegisterServiceName] = useState('')
   const [servicePrice, RegisterPrice] = useState('')
   const [serviceInfo, RegisterInfo] = useState('')
   const [serviceQty, RegisterQty] = useState('')
+  const [sid, SetServiceId] = useState('')
+  const [sqty, SetQty] = useState('')
+  const [price, setPrice] = useState('value')
 
   //called only once
   useEffect(async () => {
@@ -94,12 +98,18 @@ const BMS = () => {
   }
 
   const onRegisterPressed = async () => {
-    const { status } = await RegisterUser(walletAddress, regName, regRole)
+    const { status } = await RegisterUser(walletAddress, regName)
     setStatus(status)
   }
 
-  const onCheckUserPressed = async () => {
-    const { status } = await CheckUser(userAdd)
+  const onApproveUserPressed = async () => {
+    const { status } = await ApproveUser(walletAddress, userAdd)
+    setStatus(status)
+  }
+
+  const onBuyPressed = async () => {
+    const price = await loadServicePrice(sid)
+    const { status } = await BuyService(walletAddress, sid, sqty, price)
     setStatus(status)
   }
 
@@ -129,8 +139,10 @@ const BMS = () => {
         )}
       </button>
       <h2 style={{ paddingTop: '5px' }}>Current Message of the Day:</h2>
-      <p>{message}</p>
-      <h4 style={{ paddingTop: '5px' }}>New Message:</h4>
+
+      <p id="code">{message}</p>
+
+      <h4 style={{ paddingTop: '10px' }}>Set new Message (Owner function):</h4>
       <div>
         <input
           type="text"
@@ -138,19 +150,28 @@ const BMS = () => {
           onChange={(e) => setNewMessage(e.target.value)}
           value={newMessage}
         />
-        <div></div>
+        <button
+          id="publish"
+          style={{ float: 'right' }}
+          onClick={onUpdatePressed}
+        >
+          Update
+        </button>
+        <h4 style={{ paddingTop: '30px' }}>Register:</h4>
         <input
           type="text"
           placeholder="Please input your name here!"
           onChange={(e) => RegisterName(e.target.value)}
           value={regName}
         />
-        <input
-          type="text"
-          placeholder="Role"
-          onChange={(e) => RegisterRole(e.target.value)}
-          value={regRole}
-        />
+        <button
+          id="publish"
+          style={{ float: 'right' }}
+          onClick={onRegisterPressed}
+        >
+          Register
+        </button>
+        <h4 style={{ paddingTop: '30px' }}>Create Service (Owner function):</h4>
         <input
           type="text"
           placeholder="Service Name"
@@ -175,29 +196,49 @@ const BMS = () => {
           onChange={(e) => RegisterQty(e.target.value)}
           value={serviceQty}
         />
+        <button
+          id="publish"
+          style={{ float: 'right' }}
+          onClick={onCreateServicePressed}
+        >
+          Create Service
+        </button>
+        <h4 style={{ paddingTop: '30px' }}>
+          Approve and set as Registered Member (Owner function):
+        </h4>
         <input
           type="text"
           placeholder="UserAddress to check, 0xFFfAABBbCC"
           onChange={(e) => SetUserAdd(e.target.value)}
           value={userAdd}
         />
-        <p id="status">{status}</p>
-        <button id="publish" onClick={onUpdatePressed}>
-          Update
+        <button
+          id="publish"
+          style={{ float: 'right' }}
+          onClick={onApproveUserPressed}
+        >
+          Approve User
         </button>
-        <span>&nbsp;&nbsp;</span>
-        <button id="publish" onClick={onRegisterPressed}>
-          Register
-        </button>
-        <span>&nbsp;&nbsp;</span>
-        <button id="publish" onClick={onCheckUserPressed}>
-          Check User
-        </button>
-        <span>&nbsp;&nbsp;</span>
-        <button id="publish" onClick={onCreateServicePressed}>
-          Create Service
+        <h4 style={{ paddingTop: '30px' }}>
+          Purchase Service (Registered Member Only!):
+        </h4>
+        <input
+          type="text"
+          placeholder="Service ID"
+          onChange={(e) => SetServiceId(e.target.value)}
+          value={sid}
+        />
+        <input
+          type="text"
+          placeholder="Qty"
+          onChange={(e) => SetQty(e.target.value)}
+          value={sqty}
+        />
+        <button id="publish" style={{ float: 'right' }} onClick={onBuyPressed}>
+          Buy!
         </button>
       </div>
+      <p id="status">{status}</p>
     </div>
   )
 }

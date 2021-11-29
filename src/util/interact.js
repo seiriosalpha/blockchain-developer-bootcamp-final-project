@@ -1,18 +1,19 @@
 import BMS from '../contracts/BMS.json'
-import getWeb3 from './getWeb3'
-
-const path = require('path')
+import BigNumber from 'bignumber.js'
+//import getWeb3 from './getWeb3'
 require('dotenv').config()
 
 //Connecting to local blockchain using web3 and HttpProvider
 //var Web3 = require('web3')
 //var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-//const contractAddress = '';
+//const contractAddress = '0x8Ef79b1389Cc9e1862718579d04729b39Ac9B5E9'
 
-//Connecting to rinkby blockchain using web3 and Infura HttpProvider
+//Connecting to rinkeby blockchain using web3 and Infura HttpProvider
 var Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/eb1a323474bd4445be64173b46393e40'))
-const contractAddress = '0x1d90da6E3c7382a80bb3391A8e41B8A436f76ADC';
+var web3 = new Web3(
+  new Web3.providers.HttpProvider(process.env.REACT_APP_API_URL),
+)
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS
 
 //Load the smart contract
 export const BMSContract = new web3.eth.Contract(BMS.abi, contractAddress)
@@ -23,16 +24,56 @@ export const loadCurrentMessage = async () => {
   return message
 }
 
-//Return the User info stored in the smart contract
-export const CheckUser = async (userAdd) => {
-  const message = await BMSContract.methods.users(userAdd).call()
-  if (message.name.trim() != '') {
+//Return the message stored in the smart contract
+export const loadServicePrice = async (sid) => {
+  const value = await BMSContract.methods.services(sid).call()
+  return value.price
+}
+
+//Check for Metamask and if there is no wallet connected, or the Name and Role is an empty string / empty int
+export const ApproveUser = async (address, approveaddress) => {
+  //input error handling
+  if (!window.ethereum || address === null) {
     return {
-      status: '😸 Found it! Name: ' + message.name + ' Role: ' + message.role,
+      status: '💡 Connect your Metamask wallet to register!',
     }
-  } else {
+  }
+  if (approveaddress.trim() === '') {
     return {
-      status: '😥 User not found! ',
+      status: '❌ Your name and role cannot be empty.',
+    }
+  }
+
+  //const nonce = await web3.eth.getTransactionCount(myAddress, 'latest'); // nonce starts counting from 0
+  //set up transaction parameters
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: address, // must match user's active address.
+    //	'nonce': nonce,
+    data: BMSContract.methods.addMember(approveaddress).encodeABI(),
+  }
+  //sign the transaction
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [transactionParameters],
+    })
+    return {
+      status: (
+        <span>
+          ✅{' '}
+          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+            View the status of your transaction on Etherscan!
+          </a>
+          <br />
+          ℹ️ Once the transaction is verified by the network, the message will
+          be updated automatically.
+        </span>
+      ),
+    }
+  } catch (error) {
+    return {
+      status: '😿 ' + error.message,
     }
   }
 }
@@ -118,14 +159,14 @@ export const getCurrentWalletConnected = async () => {
 }
 
 //Check for Metamask and if there is no wallet connected, or the Name and Role is an empty string / empty int
-export const RegisterUser = async (address, regName, regRole) => {
+export const RegisterUser = async (address, regName) => {
   //input error handling
   if (!window.ethereum || address === null) {
     return {
       status: '💡 Connect your Metamask wallet to register!',
     }
   }
-  if (regName.trim() === '' && regRole.trim() === '') {
+  if (regName.trim() === '') {
     return {
       status: '❌ Your name and role cannot be empty.',
     }
@@ -137,7 +178,7 @@ export const RegisterUser = async (address, regName, regRole) => {
     to: contractAddress, // Required except during contract publications.
     from: address, // must match user's active address.
     //	'nonce': nonce,
-    data: BMSContract.methods.createUser(regName, regRole).encodeABI(),
+    data: BMSContract.methods.createUser(regName).encodeABI(),
   }
   //sign the transaction
   try {
@@ -270,17 +311,54 @@ export const updateMessage = async (address, message) => {
   }
 }
 
-export const Payment = async (address, value) => {
-  const etherAmount = web3.toBigNumber(value)
-  const weiValue = web3.toWei(etherAmount, 'ether')
+//Check for Metamask and if there is no wallet connected, or the message is an empty string
+export const BuyService = async (address, sid, sqty, price) => {
+  const etherAmount = BigNumber(price).toString()
+  const weiValue = parseInt(web3.utils.toWei(etherAmount, 'ether')).toString(16)
+  //input error handling
+  if (!window.ethereum || address === null) {
+    return {
+      status:
+        '💡 Connect your Metamask wallet to update the message on the blockchain.',
+    }
+  }
+  if (sid.trim() === '' && sqty.trim() === '') {
+    return {
+      status: '❌ Your message cannot be an empty string.',
+    }
+  }
 
-  //TODO --> Setup payment!
+  //const nonce = await web3.eth.getTransactionCount(myAddress, 'latest'); // nonce starts counting from 0
+  //set up transaction parameters
   const transactionParameters = {
     to: contractAddress, // Required except during contract publications.
     from: address, // must match user's active address.
     //	'nonce': nonce,
-    gas: 30000,
     value: weiValue,
-    //data: helloWorldContract.methods.update(message).encodeABI(),
+    data: BMSContract.methods.purchaseService(sid, sqty).encodeABI(),
+  }
+  //sign the transaction
+  try {
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [transactionParameters],
+    })
+    return {
+      status: (
+        <span>
+          ✅{' '}
+          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+            View the status of your transaction on Etherscan!
+          </a>
+          <br />
+          ℹ️ Once the transaction is verified by the network, the message will
+          be updated automatically.
+        </span>
+      ),
+    }
+  } catch (error) {
+    return {
+      status: '😿 ' + error.message,
+    }
   }
 }

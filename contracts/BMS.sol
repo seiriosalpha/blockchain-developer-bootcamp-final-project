@@ -1,216 +1,272 @@
 /// SPDX-License-Identifier: MIT
-/// Commented to the specs described by NatSpec Solidity documentation
 
+/// Specifies the version of Solidity
 pragma solidity 0.8.5;
 
-/** Defines an interface named `MyInterface`.
-*/
-interface MyInterface {
-    function getAmt() external view returns (uint256);
-}
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
-/// Defines a contract named `BMS`.
-contract BMS{
+/// @title Contract for Blockchain Medical System
+/// @author Samuel Tan
+/// @notice Allows Medical and non-medical users to purchase medical services and service management
+/// @dev Inherit from both OpenZeppelin Ownable and AccessControl contracts to implement role-based and owner-only functions 
+contract BMS is Ownable, AccessControl {
 
-  /// Hint: We want to protect our users balance from other contracts
-  mapping (address => uint256) private balances;
-   
-	 /** Declares a state variable `message` of type `string`.
-   State variables are variables whose values are permanently stored in contract storage. The keyword `public` makes variables accessible from outside a contract and creates a function that other contracts or clients can call to access the value.
-   */
-  uint public orderCount = 0;
-  mapping(uint => Order) private orders;
+    /// @notice Protect our users balance from other contracts
+    mapping (address => uint256) private balances;
 
-  uint public ServiceCount = 0;
-  mapping(uint => Service) public services;
+		/// @notice Struts mapping for Orders created 
+    uint256 public orderCount = 0;
+    mapping(uint256 => Order) public orders;
 
-  uint public userCount = 0;
-  mapping(address => User) public users;
+		/// @notice Struts mapping for services created
+    uint256 public ServiceCount = 0;
+    mapping(uint256 => Service) public services;
 
-    /// <owner>
-  address private owner = msg.sender;
-
-  string public message;
-    
-  uint256 public TotalAmt;
-    
-  bool private lock;
-
-  struct Order {
-        uint oid;
+		/// @notice Struts mapping for users created
+    uint256 public userCount = 0;
+    mapping(address => User) public users;
+ 
+    struct Order {
+        uint256 oid;
         address payable seller;
         address payable buyer;
         string status;
-        uint pid;
-        uint quantitiy;
-  }
+        uint256 pid;
+        uint256 quantitiy;
+    }
 
-  struct Service {
-        uint pid;
+    struct Service {
+        uint256 pid;
         string name;
-        uint price;
+        uint256 price;
         address payable staff;
         string info;
-        uint quantity;
-  }
+        uint256 quantity;
+    }
 
-  struct User {
-        uint uid;
+    struct User {
+        uint256 uid;
         string name;
-        uint role;
         address user;
         bool created;
-  }
+    }
 
-	/** Emitted when update function is called
-   Smart contract events are a way for your contract to communicate that something happened on the blockchain to your app front-end, which can be 'listening' for certain events and take action when they happen.
-   */
-
-  event ServiceCreated(
-        uint pid,
+    /// @notice Emitted a health/medical service has been created
+    /// @param pid service id
+    /// @param name service name
+		/// @param price service price
+		/// @param staff the medical staff/owner address
+		/// @param info service information
+		/// @param quantity service quantity
+    event ServiceCreated(
+        uint256 pid,
         string name,
-        uint price,
+        uint256 price,
         address staff,
         string info,
-        uint quantity
-  );
+        uint256 quantity
+    );
 
-  event  UserCreated(
-        uint uid,
+		/// @notice Emitted a new user has been created
+    /// @param uid user id
+    /// @param name user name
+		/// @param created true or false
+    event  UserCreated(
+        uint256 uid,
         string name,
-        uint role,
         address user,
         bool created
-  );
+    );
 
-  event ServicePurchased(
-        uint oid,
+    /// @notice Emitted a health/medical service has been purchased
+    /// @param oid order id
+    /// @param seller owner's address
+		/// @param buyer seller's address
+		/// @param status to be set as Sold
+		/// @param pid service id
+		/// @param quantity service quantity
+    event ServicePurchased(
+        uint256 oid,
         address payable seller,
         address payable buyer,
         string status,
-        uint pid,
-        uint quantity
-  );
+        uint256 pid,
+        uint256 quantity
+    );
 
-  event UpdatedMessages(
-				string oldStr,
-				string newStr
-	);
+		/// @notice Emitted the MOTD has been updated
+    /// @param oldStr old message
+    /// @param newStr new message
+	  event UpdatedMessages(
+		string oldStr,
+		string newStr
+    );
 
-  event UpdatedAmt(
-				uint256 oldAmt, 
-				uint256 newAmt
-	);
+		/// @notice Emitted user has been approved and grant new role
+    /// @param role DEFAULT_ADMIN_ROLE role to be granted
+    /// @param sender the user's address
+    event RoleGranted (
+        bytes32 role,
+        address sender
+    );
 
-  /** Emitted when update function is called
-	Add 2 arguments for this event, an accountAddress and an amount
-	*/
-  //event LogDepositMade(address accountAddress, uint256 amount);
+		/// @notice Emitted payment has been received
+    /// @param accountAddress buyer's address
+    /// @param amount amount to be sent
+    event LogPaymentReceived(
+        address accountAddress,
+        uint256 amount
+    );
 
-	// Similar to many class-based object-oriented languages, a constructor is a special function that is only executed upon contract creation.
-  constructor(string memory initMessage) {
+		/// @notice The MOTD message
+		string public message;
+
+		/// @notice Set the MOTD and assign owner with DEFAULT_ADMIN_ROLE during deployment of the contract
+		/// @dev need to set the message and owner address in 2_deploy_contracts.js before deployment
+    constructor(string memory initMessage, address root) {
       
-	/// Accepts a string argument `initMessage` and sets the value into the contract's `message` storage variable).
+	  /// @dev Accepts a string argument `initMessage` and sets the value into the contract's `message` storage variable).
       message = initMessage;
-      TotalAmt = 0;
-  }
-	
-	/**
-  Using modifiers only for check for only Owner Functions
-  */
-	modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can register a user.");
-        _;
-  }
+      _setupRole(DEFAULT_ADMIN_ROLE, root);
 
-	/** 
-	Fallback function - Called if other functions don't match call or
-  sent ether without data
-  Typically, called when invalid data is sent
-  Added so ether sent to this contract is reverted if the contract fails
-  otherwise, the sender's money is transferred to contract
-	*/
-  receive() external payable {
-		revert();
-  }
+    }
 
-  function setAmt(uint256 newAmt) public returns(bool) {
-        uint256 oldAmt = TotalAmt;
-        TotalAmt = newAmt;
-        emit UpdatedAmt(oldAmt, newAmt);
-        return true;
-  }
+    /// @notice A modifier to restrict to registered users only functions
+    modifier onlyMember() {
+    require(isMember(msg.sender), "Restricted to Registered Users Only.");
+    _;
+    }
 
-  function getAmt() public view returns (uint256) {
-        //uint256 surchargefees = 10;
-        //uint256 finalamt = TotalAmt + surchargefees;
-        return TotalAmt;
-  }
+    /// @notice This fallback function will keep all the incoming Ether
+    receive() external payable {
+        receiveMoney();
+    }
+
+		/// @notice Performs the balance deduction from sender's wallet
+    function receiveMoney() public payable {
+        assert(balances[msg.sender] + msg.value >= balances[msg.sender]);
+        balances[msg.sender] += msg.value;
+        emit LogPaymentReceived(msg.sender, msg.value);
+    }
+
+    /// @notice Return `true` if the `account` is Registered.
+		/// @param account user's address
+    function isMember(address account) public virtual view returns (bool){
+    return hasRole(DEFAULT_ADMIN_ROLE, account);
+    }
+
+    /// @notice Owner to set register user account as approved user.
+		/// @param account user's address
+    function addMember(address account) public virtual onlyOwner {
+    grantRole(DEFAULT_ADMIN_ROLE, account);
+    emit RoleGranted(DEFAULT_ADMIN_ROLE, account);
+    }
    
-	 /// A public function that accepts a string argument and updates the `message` storage variable.
-  function update(string memory newMessage) public onlyOwner {
+	  /// @notice A public function that accepts a string argument and updates the `MOTD` storage variable. Only accessibe by Owner
+		/// @param newMessage the new MOTD to be set
+    function update(string memory newMessage) public onlyOwner{
       string memory oldMsg = message;
       message = newMessage;
       emit UpdatedMessages(oldMsg, newMessage);
-  }
-
-  function createUser(string memory _name, uint _role) public {
-        ///No repeated address
-        require(users[msg.sender].created == false, 'User already created');
-        ///Increase userCount
-        userCount++;
-        ///Add user
-        users[msg.sender] = User(userCount, _name, _role, msg.sender, true);
-        ///Trigger an event
-        emit UserCreated(userCount, _name, _role, msg.sender, true);
-  }
-
-  function createService(string memory _name, uint _price, string memory _info, uint _quantity) public onlyOwner{
-        /// Require a valid price
-        require(_price > 0, 'Invalid Price');
-        /// Increment product count
-        ServiceCount ++;
-        /// Create the product
-        services[ServiceCount] = Service(ServiceCount, _name, _price, payable(msg.sender), _info, _quantity);
-        /// Trigger an event
-        emit ServiceCreated(ServiceCount, _name, _price, msg.sender, _info, _quantity);
-  }
-
-	function purchaseService(uint _id, uint _quantity) public payable {
-        /// Fetch the product
-        Service memory _service = services[_id];
-        /// Fetch the owner
-        address payable _staff = _service.staff;
-        /// Validate the buyer
-        require(users[msg.sender].created == true, 'Unregistered user');
-        /// Make sure the product has a valid id
-        require(_service.pid > 0 && _service.pid <= ServiceCount, 'Invalid Product ID');
-        /// Require that there is enough Ether in the transaction
-        require(msg.value >= _service.price, 'Not enough ether in Wallet');
-        /// Require that the buyer is not the seller
-        require(_staff != msg.sender,'Invalid Purchase');
-        /// Incrmement orderCount
-        orderCount++;
-        /// Reduce the quantity of the product
-        services[_id].quantity =  _service.quantity - 1;
-        /// Transfer ownership to the buyer
-        orders[orderCount] = Order(orderCount, _staff, payable(msg.sender),  'Ordered', _service.pid, _quantity);
-        /// Pay the contract by sending them Ether
-        payable(msg.sender).transfer(msg.value);
-        /// Trigger an event
-        emit ServicePurchased(orderCount, _staff, payable(msg.sender), 'Ordered', _service.pid, _quantity);
-  }
-
-/**
-     /// Conforms to checks-effects-interactions pattern to protect against #SWC-107 - Reentrancy
-    function transfer(address addr, uint amount) external {
-    require(!lock);
-    lock = true;
-    if (balances[msg.sender] >= amount) {
-        balances[addr] += amount;
-        balances[msg.sender] -= amount;
     }
-    lock = false;
+
+    /// @notice Medical Staffs/Patient will have to register themselves and onboard somehow on the contract
+		/// @param _name the name that will be set by the user
+    function createUser(string memory _name) public{
+      ///Check for repeated address
+      require(users[msg.sender].created == false, 'User already created');
+      ///Increase userCount
+      userCount++;
+      ///Add user
+      users[msg.sender] = User(userCount, _name, msg.sender, true);
+      ///Trigger an event
+      emit UserCreated(userCount, _name, msg.sender, true);
     }
-*/
+
+    /// @notice Medical Staffs (Owner) can create health services which can be purchased by the users only can be access by the Owner
+		/// @param _name the name of the service
+		/// @param _price the price of the service
+		/// @param _info short description of the service
+		/// @param _quantity the number of this servicee to be created
+		/// @dev Check for price to be greater than 0 
+    function createService(string memory _name, uint256 _price, string memory _info, uint256 _quantity) public onlyOwner{
+      /// Require a valid price
+      require(_price > 0, 'Invalid Price');
+      /// Increment product count
+      ServiceCount ++;
+      /// Create the product
+      services[ServiceCount] = Service(ServiceCount, _name, _price, payable(msg.sender), _info, _quantity);
+      /// Trigger an event
+      emit ServiceCreated(ServiceCount, _name, _price, msg.sender, _info, _quantity);
+    }
+
+		/// @notice Registered Users can purchase health services that has been created only can be access by approved users
+		/// @param _id the service ID to be purchased
+		/// @param _id the number of service package to be purchased
+		/// @dev Check for exact payment and exact amount set in the front-end to avoid having to send ETH back to sender
+    function purchaseService(uint256 _id, uint256 _quantity) public payable onlyMember{
+      /// Fetch the service
+      Service memory _service = services[_id];
+      /// Fetch the owner
+      address payable _staff = _service.staff;
+      /// Make sure the service has a valid id
+      require(_service.pid > 0 && _service.pid <= ServiceCount, 'Invalid Product ID');
+			/// Make sure the service quantity is not 0
+      require(_service.quantity > 0, 'Insufficient Stock!');
+			/// Make sure the purchase quanity is enough 
+      require(_service.quantity >= _quantity, 'Insufficient Stock!');
+      /// Require that there is enough Ether in the transaction
+      require(msg.value >= _service.price * (1 ether), 'Not enough ether in Wallet');
+      /// Require that the buyer is not the seller
+      require(_staff != msg.sender,'Invalid Purchase');
+      /// Incrmement orderCount
+      orderCount++;
+      /// Reduce the quantity of the product
+      services[_id].quantity =  _service.quantity - 1;
+      /// Transfer ownership to the buyer
+      orders[orderCount] = Order(orderCount, _staff, payable(msg.sender), 'Ordered', _service.pid, _quantity);
+      /// Pay the contract by sending them Ether
+      payable(msg.sender).transfer(msg.value);
+      /// Trigger an event
+      emit ServicePurchased(orderCount, _staff, payable(msg.sender), 'Ordered', _service.pid, _quantity);
+    }
+
+	  /// @notice Medical Staffs can upload or edit the medical data.
+    function addMedicalData(string memory _name) public returns (bool) {
+			/// TODO: Create a new Patient data and put in array
+    	/// TODO: Increment the ID by one
+    	/// TODO: Emit the appropriate event
+    	/// TODO: return true
+		}
+
+		/// @notice Medical Staffs/Patient have to identify themselves in order to securely access to the medical data.
+  	function medicalData(uint sku) public {
+ 			/// TODO: Add modifiers to check the person calling this function is the Staffs/Patient. 
+			/// TODO: call the event associated with this function!
+			/// TODO: Present the data to user if user is Staff
+			/// TODO: Present the data to user if payment has been completed
+		}
+
+		/// @notice Patient can authorize 3rd party access to securely access to the medical data.
+		function signMedicalData() public{
+  		/// TODO: it should Create a SHA3 hash of the message
+  		/// TODO: Verify that the message's signer is the owner of the medical data
+			/// TODO: Signs the messageHash with the Hospital account
+  		/// TODO: set the state to Signed. 
+		}
+
+		/// @notice Verify the authenticity of the medical record using digital signature that uniquely identifies the issuer of the record.
+		function verify() public {
+  		/// TODO: It should recover signer address from a message by using their signature
+  		/// TODO: Recover signer from signature and hash
+  		/// TODO: Compare recovered signer to claimed signer
+		}
+
+		/// @notice Withdraw contract funds
+    /// @dev Only the contract owner can call this
+	  function withdraw() public onlyOwner {
+    /// TODO: withdraw any funds from contract
+    }
+
 }

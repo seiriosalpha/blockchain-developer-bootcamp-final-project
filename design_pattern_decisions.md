@@ -1,5 +1,11 @@
-Smart Contracts Design Considerations:
+# Smart Contracts Design Considerations:
 
-1. Access Control Design Patterns (Restricting access to certain functions using things like Ownable, Role-based Control) Access Control Design Patterns
+## Access Control Design Patterns
 
-2. Inheritance and Interfaces (Importing and extending contracts and/or using contract interfaces) Inheritances and Interfaces — (note: this is already a requirement in the final project, so you can simply describe which library or interface you use)
+`Ownable` design pattern used in three functions: `update()`, `withdraw()`, `createService()` and `addMember()`. These functions do not need to be used by anyone else apart from the contract creator
+
+Single-role to identify registered users that has been approved by the contract Owner to access `purchaseService()`.
+
+## Inheritance and Interfaces
+
+BMS contract inherits the OpenZeppelin `Ownable` contract to enable ownership for functions that can only be accessed by the contract owner.

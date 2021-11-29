@@ -6,10 +6,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   display: flex;
-    justify-content: center;
-    align-items: center;
-    height:90vh;  
-    font-size: 16px;
+  justify-content: center;
+  align-items: center;
+  height: 120vh;
+  font-size: 14px;
 }
 
 code {
@@ -18,19 +18,19 @@ code {
 }
 
 #container {
-  width: 80vh;
- border: 4px dashed rgba(4, 4, 5, 0.1);
-    min-height: 140px;
-    padding: 32px;
-    position: relative;
-    border-radius: 16px;
-    -webkit-box-align: center;
-    align-items: left;
-    -webkit-box-pack: center;
-    justify-content: left;
-    flex-direction: column;
-    text-align:left;
-    word-break: break-word;
+  width: 90vh;
+  border: 4px dashed rgba(4, 4, 5, 0.1);
+  min-height: 240px;
+  padding: 32px;
+  position: relative;
+  border-radius: 36px;
+  -webkit-box-align: center;
+  align-items: left;
+  -webkit-box-pack: center;
+  justify-content: left;
+  flex-direction: column;
+  text-align: left;
+  word-break: break-word;
 }
 
 input {
@@ -46,19 +46,19 @@ input {
 }
 
 #status {
-  color:  #254cdd;
+  color: #254cdd;
   font-size: 14px;
   font-weight: 600;
 }
 
 button {
   padding: 9px 16px;
-  max-height: 40px;
+  max-height: 35px;
   *box-shadow: 4px 4px 15px 0 rgb(0 0 0 / 20%);
-  border-color:  #254cdd ;
+  border-color: #254cdd;
   border: none;
   background: none;
-  color:white;
+  color: white;
   background-color: #254cdd;
   border-radius: 6px;
   align-items: center;
@@ -66,35 +66,34 @@ button {
   font-weight: 500;
   text-align: center;
   font-weight: bold;
-  cursor:pointer;
+  cursor: pointer;
   min-width: 160px;
-  margin-top: 70px;
+  margin-top: 20px;
   font-family: Rubik, sans-serif;
 }
 
 #logo {
-  float:left;
+  float: left;
   display: flex;
-  margin-left: -10px;
-  margin-top: -16px;
+  margin-left: -20px;
+  margin-top: -46px;
   width: 210px;
 }
 
 #walletButton {
   padding: 7px 16px;
   background-color: white;
-  float:right;
-  border: 2px solid #254cdd ;
-  color:#254cdd;
+  float: right;
+  border: 2px solid #254cdd;
+  color: #254cdd;
   margin-top: 0px;
-
 }
-h2{
+h2 {
   display: block;
-  clear:both;
-  font-weight:400;
+  clear: both;
+  font-weight: 400;
 }
 
 a {
-  color:#254cdd
+  color: #254cdd;
 }

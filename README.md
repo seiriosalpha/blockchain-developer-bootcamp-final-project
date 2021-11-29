@@ -20,23 +20,41 @@ Blockchain Medical System Contract Example Workflow
 
 8. Medical bills payment can be issued by the Medical Staffs and paid in cryptocurrency by the Patient.
 
-## Setup and Installing dependencies for front-end App 
+## Ethereum Address to receive the certification:
+
+`0xd363506E11F5Ff0B76B850aB1e42B35A8C41EFA9`
+
+## Setup and Installing dependencies for front-end App
+
 ```
 git clone https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git
 cd blockchain-developer-bootcamp-final-project
 npm install
 npm start
 ```
-## Setup and testing for the Smart Contract
+
+## Setup and testing for the Smart Contract - Locally
+
 ```
-Local testnet done using Ganache - http://127.0.0.1:7574
+Local testnet using Ganache - http://127.0.0.1:7574
 truffle test
-truffle compile
-truffle migrate
+truffle migrate --network test
+Add and point the contract address in interact.js
+```
+
+## Setup and testing for the Smart Contract - Rinkeby or other testnet
+
+```
+Configure the .env-example and rename it to .env
+truffle test
+truffle migrate --network rinkeby
+Add and point the Contract Address in .env
 ```
 
 ## Access to the current deployment
-```To Be Updated```
+
+`To Be Updated`
 
 ## Project Screencast
-```To Be Updated```
+
+`To Be Updated`
