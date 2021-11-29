@@ -1,6 +1,8 @@
 node_modules
 package-lock.json
 .env
+ABMS.sol.tmp
+BMS.sol.backup
 node_modules/.package-lock.json
 node_modules/.bin/acorn
 node_modules/.bin/acorn.cmd
@@ -9992,3 +9994,4 @@ node_modules/browserify-sign/node_modules/bn.js/LICENSE
 node_modules/browserify-sign/node_modules/bn.js/package.json
 node_modules/browserify-sign/node_modules/bn.js/README.md
 node_modules/browserify-sign/node_modules/bn.js/lib/bn.js
+.gitignore
