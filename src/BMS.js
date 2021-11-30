@@ -29,7 +29,6 @@ const BMS = () => {
   const [serviceQty, RegisterQty] = useState('')
   const [sid, SetServiceId] = useState('')
   const [sqty, SetQty] = useState('')
-  const [price, setPrice] = useState('value')
 
   //called only once
   useEffect(async () => {
@@ -78,7 +77,11 @@ const BMS = () => {
         <p>
           {' '}
           😼{' '}
-          <a target="_blank" href={`https://metamask.io/download.html`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            shref={`https://metamask.io/download.html`}
+          >
             You must install Metamask, a virtual Ethereum wallet, in your
             browser.
           </a>

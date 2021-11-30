@@ -1,7 +1,7 @@
 require('dotenv').config()
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 const path = require('path')
-const { API_URL, MNEMONIC } = process.env
+const { REACT_APP_API_URL, MNEMONIC } = process.env
 
 module.exports = {
   contracts_build_directory: path.join(__dirname, '/src/contracts'),
@@ -13,7 +13,7 @@ module.exports = {
     },
     rinkeby: {
       provider: function () {
-        return new HDWalletProvider(MNEMONIC, API_URL)
+        return new HDWalletProvider(MNEMONIC, REACT_APP_API_URL)
       },
       network_id: '*',
     },

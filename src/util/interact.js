@@ -4,16 +4,16 @@ import BigNumber from 'bignumber.js'
 require('dotenv').config()
 
 //Connecting to local blockchain using web3 and HttpProvider
-var Web3 = require('web3')
-var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-const contractAddress = '0x17a0ec8ca2Ba3C09C1F7169917D6369bDc76caef'
+//var Web3 = require('web3')
+//var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+//const contractAddress = '0x17a0ec8ca2Ba3C09C1F7169917D6369bDc76caef'
 
 //Connecting to rinkeby blockchain using web3 and Infura HttpProvider
-//var Web3 = require('web3')
-//var web3 = new Web3(
-//  new Web3.providers.HttpProvider(process.env.REACT_APP_API_URL),
-//)
-//const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS
+var Web3 = require('web3')
+var web3 = new Web3(
+  new Web3.providers.HttpProvider(process.env.REACT_APP_API_URL),
+)
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS
 
 //Load the smart contract
 export const BMSContract = new web3.eth.Contract(BMS.abi, contractAddress)
@@ -108,7 +108,11 @@ export const connectWallet = async () => {
           <p>
             {' '}
             🦊{' '}
-            <a target="_blank" href={`https://metamask.io/download.html`}>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://metamask.io/download.html`}
+            >
               You must install Metamask, a virtual Ethereum wallet, in your
               browser.
             </a>
@@ -151,7 +155,11 @@ export const getCurrentWalletConnected = async () => {
           <p>
             {' '}
             😼{' '}
-            <a target="_blank" href={`https://metamask.io/download.html`}>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://metamask.io/download.html`}
+            >
               You must install Metamask, a virtual Ethereum wallet, in your
               browser.
             </a>
@@ -194,7 +202,11 @@ export const RegisterUser = async (address, regName) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+          >
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -250,7 +262,11 @@ export const CreateService = async (address, servicename, price, info, qty) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+          >
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -299,7 +315,11 @@ export const updateMessage = async (address, message) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+          >
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -351,7 +371,11 @@ export const BuyService = async (address, sid, sqty, price) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+          >
             View the status of your transaction on Etherscan!
           </a>
           <br />
