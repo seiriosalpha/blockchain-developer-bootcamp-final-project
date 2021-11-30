@@ -32,7 +32,7 @@ http://128.199.125.88:3000
 
 ## Project Demo Screencast
 
-https://youtu.be/O-6npXJ-hpw
+https://youtu.be/WsmIFSZ00p0
 
 ## Setup and Installing dependencies for Front-end App
 
@@ -74,7 +74,6 @@ Add infura or any provider to REACT_APP_API_URL in .env-example
 Add Wallet MNEMONIC, PUBLIC_KEY and PRIVATE_KEY in .env-example
 Optional, Add Etherscan API to ETHERSCAN_API_KEY in .env-example
 Rename .env-example and rename it to .env
-truffle test
 truffle migrate --network rinkeby
 Add deployed contract address to REACT_APP_CONTRACT_ADDRESS in .env
 npm start
