@@ -26,6 +26,14 @@ Blockchain Medical System Contract Example Workflow
 
 `0xd363506E11F5Ff0B76B850aB1e42B35A8C41EFA9`
 
+## Setup and Installing dependencies for Front-end App
+
+```
+git clone https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git
+cd blockchain-developer-bootcamp-final-project
+npm install
+```
+
 ## Setup and testing for the Smart Contract - Locally
 
 ```
@@ -34,6 +42,8 @@ truffle test
 truffle migrate --network test
 Add and point the REACT_APP_CONTRACT_ADDRESS in .env
 Uncomment Local TestNet configurations in /src/util/interact.js
+mv .env-example .env
+npm start
 ```
 
 ## Setup and testing for the Smart Contract - Rinkeby or other testnet
@@ -46,16 +56,8 @@ Add infura or any provider to REACT_APP_API_URL in .env-example
 Add Wallet MNEMONIC, PUBLIC_KEY and PRIVATE_KEY in .env-example
 Optional, Add Etherscan API to ETHERSCAN_API_KEY in .env-example
 Configure the .env-example and rename it to .env
-```
-
-## Setup and Installing dependencies for Front-end App
-
-```
-git clone https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git
-cd blockchain-developer-bootcamp-final-project
-npm install
-npm start
 mv .env-example .env
+npm start
 ```
 
 ## Access to the current Front-end deployment
