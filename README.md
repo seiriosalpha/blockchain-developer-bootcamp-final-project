@@ -62,7 +62,7 @@ npm start
 
 ## Access to the current Front-end deployment
 
-`128.199.125.88:3000`
+`http://128.199.125.88:3000`
 
 ## Project Screencast
 
