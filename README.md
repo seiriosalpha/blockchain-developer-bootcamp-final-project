@@ -26,6 +26,14 @@ Blockchain Medical System Contract Example Workflow
 
 `0xd363506E11F5Ff0B76B850aB1e42B35A8C41EFA9`
 
+## Access to the current Front-end deployment
+
+http://128.199.125.88:3000
+
+## Project Screencast
+
+`To Be Updated`
+
 ## Setup and Installing dependencies for Front-end App
 
 ```
@@ -34,36 +42,40 @@ cd blockchain-developer-bootcamp-final-project
 npm install
 ```
 
+## Environment variables (.env) Setup
+
+```
+***Important: Populate the PUBLIC_KEY first before deploying your contract!
+
+REACT_APP_API_URL = "https://xxx.io/v2/your-api-key"
+REACT_APP_CONTRACT_ADDRESS = "your-metamask-seed-reference"
+PUBLIC_KEY = "your-public-account-address / your metamask account address"
+PRIVATE_KEY = "your-private-account-address / your metamask account private address"
+ETHERSCAN_API_KEY = "your-etherscan-key" - Optional
+```
+
 ## Setup and testing for the Smart Contract - Locally
 
 ```
 Local testnet using Ganache - http://127.0.0.1:7574
 truffle test
+Add Test Account PUBLIC_KEY in .env-example
 truffle migrate --network test
-Add and point the REACT_APP_CONTRACT_ADDRESS in .env
-Uncomment Local TestNet configurations in /src/util/interact.js
-mv .env-example .env
+Add and point the REACT_APP_CONTRACT_ADDRESS in .env-example
+Uncomment Local TestNet configurations in /src/util/interact.js (Line 6-9)
+Rename .env-example and rename it to .env
 npm start
 ```
 
 ## Setup and testing for the Smart Contract - Rinkeby or other testnet
 
 ```
-truffle test
-truffle migrate --network rinkeby
-Add deployed contract address to REACT_APP_CONTRACT_ADDRESS in .env-example
 Add infura or any provider to REACT_APP_API_URL in .env-example
 Add Wallet MNEMONIC, PUBLIC_KEY and PRIVATE_KEY in .env-example
 Optional, Add Etherscan API to ETHERSCAN_API_KEY in .env-example
-Configure the .env-example and rename it to .env
-mv .env-example .env
+Rename .env-example and rename it to .env
+truffle test
+truffle migrate --network rinkeby
+Add deployed contract address to REACT_APP_CONTRACT_ADDRESS in .env
 npm start
 ```
-
-## Access to the current Front-end deployment
-
-`http://128.199.125.88:3000`
-
-## Project Screencast
-
-`To Be Updated`

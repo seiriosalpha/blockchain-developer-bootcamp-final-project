@@ -217,7 +217,7 @@ contract BMS is Ownable, AccessControl {
 			/// Make sure the purchase quanity is enough 
       require(_service.quantity >= _quantity, 'Insufficient Stock!');
       /// Require that there is enough Ether in the transaction
-      require(msg.value >= _service.price * (1 ether), 'Not enough ether in Wallet');
+      require(msg.value >= ((_service.price * _quantity) * (1 ether)), 'Not enough ether in Wallet');
       /// Require that the buyer is not the seller
       require(_staff != msg.sender,'Invalid Purchase');
       /// Incrmement orderCount

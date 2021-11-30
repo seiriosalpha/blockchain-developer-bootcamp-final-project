@@ -50,6 +50,7 @@ const BMS = () => {
   //Listen for our smart contract's UpdatedMessages event, and update our UI to display the new message.
   function addSmartContractListener() {
     BMSContract.events.UpdatedMessages({}, (error, data) => {
+      console.log(data)
       if (error) {
         setStatus('😿 ' + error.message)
       } else {

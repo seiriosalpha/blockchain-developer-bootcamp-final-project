@@ -4,16 +4,16 @@ import BigNumber from 'bignumber.js'
 require('dotenv').config()
 
 //Connecting to local blockchain using web3 and HttpProvider
-//var Web3 = require('web3')
-//var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
-//const contractAddress = '0x8Ef79b1389Cc9e1862718579d04729b39Ac9B5E9'
+var Web3 = require('web3')
+var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+const contractAddress = '0x17a0ec8ca2Ba3C09C1F7169917D6369bDc76caef'
 
 //Connecting to rinkeby blockchain using web3 and Infura HttpProvider
-var Web3 = require('web3')
-var web3 = new Web3(
-  new Web3.providers.HttpProvider(process.env.REACT_APP_API_URL),
-)
-const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS
+//var Web3 = require('web3')
+//var web3 = new Web3(
+//  new Web3.providers.HttpProvider(process.env.REACT_APP_API_URL),
+//)
+//const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS
 
 //Load the smart contract
 export const BMSContract = new web3.eth.Contract(BMS.abi, contractAddress)
@@ -62,7 +62,11 @@ export const ApproveUser = async (address, approveaddress) => {
       status: (
         <span>
           ✅{' '}
-          <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://rinkeby.etherscan.io/tx/${txHash}`}
+          >
             View the status of your transaction on Etherscan!
           </a>
           <br />
@@ -313,7 +317,7 @@ export const updateMessage = async (address, message) => {
 
 //Check for Metamask and if there is no wallet connected, or the message is an empty string
 export const BuyService = async (address, sid, sqty, price) => {
-  const etherAmount = BigNumber(price).toString()
+  const etherAmount = BigNumber(price * sqty).toString()
   const weiValue = parseInt(web3.utils.toWei(etherAmount, 'ether')).toString(16)
   //input error handling
   if (!window.ethereum || address === null) {
