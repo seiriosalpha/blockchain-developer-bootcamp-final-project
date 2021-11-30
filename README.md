@@ -4,34 +4,27 @@ The Blockchain Medical System Blockchain is about removing the middleman and enh
 
 Blockchain Medical System Contract Example Workflow
 
-1. Medical Staffs/Patient will have to register themselves on the contract.
+1. Medical Staffs/Patient will have to register themselves on the contract. - [x]
 
-2. Medical Staffs can set and update the message of the day (MOTD).
+2. Medical Staffs can set and update the message of the day (MOTD). - [x]
 
-3. Medical Staffs can create purchasable services.
+3. Medical Staffs can create purchasable services. - [x]
 
-4. Medical Staffs can upload or edit the medical data.
+4. Registered users can purchase services - [x]
 
-5. Medical Staffs/Patient have to identify themselves in order to securely access to the medical data.
+5. Medical Staffs can upload or edit the medical data. - [ ]
 
-6. Patient can authorize 3rd party access to securely access to the medical data.
+6. Medical Staffs/Patient have to identify themselves in order to securely access to the medical data. - [ ]
 
-7. Verify the authenticity of the medical record using digital signature that uniquely identifies the issuer of the record.
+7. Patient can authorize 3rd party access to securely access to the medical data. - [ ]
 
-8. Medical bills payment can be issued by the Medical Staffs and paid in cryptocurrency by the Patient.
+8. Verify the authenticity of the medical record using digital signature that uniquely identifies the issuer of the record. - [ ]
+
+9. Medical bills payment can be issued by the Medical Staffs and paid in cryptocurrency by the Patient. - [ ]
 
 ## Ethereum Address to receive the certification:
 
 `0xd363506E11F5Ff0B76B850aB1e42B35A8C41EFA9`
-
-## Setup and Installing dependencies for front-end App
-
-```
-git clone https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git
-cd blockchain-developer-bootcamp-final-project
-npm install
-npm start
-```
 
 ## Setup and testing for the Smart Contract - Locally
 
@@ -39,21 +32,35 @@ npm start
 Local testnet using Ganache - http://127.0.0.1:7574
 truffle test
 truffle migrate --network test
-Add and point the contract address in interact.js
+Add and point the REACT_APP_CONTRACT_ADDRESS in .env
+Uncomment Local TestNet configurations in /src/util/interact.js
 ```
 
 ## Setup and testing for the Smart Contract - Rinkeby or other testnet
 
 ```
-Configure the .env-example and rename it to .env
 truffle test
 truffle migrate --network rinkeby
-Add and point the Contract Address in .env
+Add deployed contract address to REACT_APP_CONTRACT_ADDRESS in .env-example
+Add infura or any provider to REACT_APP_API_URL in .env-example
+Add Wallet MNEMONIC, PUBLIC_KEY and PRIVATE_KEY in .env-example
+Optional, Add Etherscan API to ETHERSCAN_API_KEY in .env-example
+Configure the .env-example and rename it to .env
 ```
 
-## Access to the current deployment
+## Setup and Installing dependencies for Front-end App
 
-`To Be Updated`
+```
+git clone https://github.com/seiriosalpha/blockchain-developer-bootcamp-final-project.git
+cd blockchain-developer-bootcamp-final-project
+npm install
+npm start
+mv .env-example .env
+```
+
+## Access to the current Front-end deployment
+
+`128.199.125.88:3000`
 
 ## Project Screencast
 
