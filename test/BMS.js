@@ -57,7 +57,7 @@ contract('BMS', (accounts) => {
     })
     /// emit event user created
     truffleAssert.eventEmitted(result, 'UpdatedMessages', (ev) => {
-      return ev.oldStr == 'meow' && ev.newStr == Message
+      return ev.newStr == Message
     })
   })
 

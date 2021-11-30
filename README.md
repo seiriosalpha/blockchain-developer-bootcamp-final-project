@@ -45,7 +45,7 @@ npm install
 ## Environment variables (.env) Setup
 
 ```
-***Important: Populate the PUBLIC_KEY first before deploying your contract!
+***Important: Populate the PUBLIC_KEY first before running truffle test or deploying contract!
 
 REACT_APP_API_URL = "https://xxx.io/v2/your-api-key"
 REACT_APP_CONTRACT_ADDRESS = "your-metamask-seed-reference"
@@ -58,12 +58,12 @@ ETHERSCAN_API_KEY = "your-etherscan-key" - Optional
 
 ```
 Local testnet using Ganache - http://127.0.0.1:7574
-truffle test
-Add Test Account PUBLIC_KEY in .env-example
+Set Ganache account[0] Addres to PUBLIC_KEY in .env-example (Otherwise one of the test will fail)
 truffle migrate --network test
 Add and point the REACT_APP_CONTRACT_ADDRESS in .env-example
 Uncomment Local TestNet configurations in /src/util/interact.js (Line 6-9)
 Rename .env-example and rename it to .env
+truffle test
 npm start
 ```
 
