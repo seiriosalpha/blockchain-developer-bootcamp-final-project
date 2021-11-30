@@ -4,13 +4,13 @@ The Blockchain Medical System Blockchain is about removing the middleman and enh
 
 Blockchain Medical System Contract Example Workflow
 
-1. Medical Staffs/Patient will have to register themselves on the contract. - [x]
+1. Medical Staffs/Patient will have to register themselves on the contract. - [&#9745;]
 
-2. Medical Staffs can set and update the message of the day (MOTD). - [x]
+2. Medical Staffs can set and update the message of the day (MOTD). - [&#9745;]
 
-3. Medical Staffs can create purchasable services. - [x]
+3. Medical Staffs can create purchasable services. - [&#9745;]
 
-4. Registered users can purchase services - [x]
+4. Registered users can purchase services - [&#9745;]
 
 5. Medical Staffs can upload or edit the medical data. - [ ]
 
