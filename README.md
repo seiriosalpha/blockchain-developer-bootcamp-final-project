@@ -59,11 +59,12 @@ ETHERSCAN_API_KEY = "your-etherscan-key" - Optional
 ```
 Local testnet using Ganache - http://127.0.0.1:7574
 Set Ganache account[0] Addres to PUBLIC_KEY in .env-example (Otherwise one of the test will fail)
-truffle migrate --network test
 Add and point the REACT_APP_CONTRACT_ADDRESS in .env-example
 Uncomment Local TestNet configurations in /src/util/interact.js (Line 6-9)
 Rename .env-example and rename it to .env
 truffle test
+truffle migrate --network test
+Add deployed contract address to REACT_APP_CONTRACT_ADDRESS in .env
 npm start
 ```
 
