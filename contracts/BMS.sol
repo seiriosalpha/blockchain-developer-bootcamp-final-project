@@ -99,8 +99,8 @@ contract BMS is Ownable, AccessControl {
     /// @param oldStr old message
     /// @param newStr new message
 	  event UpdatedMessages(
-		string oldStr,
-		string newStr
+				string oldStr,
+				string newStr
     );
 
 		/// @notice Emitted user has been approved and grant new role
@@ -126,7 +126,7 @@ contract BMS is Ownable, AccessControl {
 		/// @dev need to set the message and owner address in 2_deploy_contracts.js before deployment
     constructor(string memory initMessage, address root) {
       
-	  /// @dev Accepts a string argument `initMessage` and sets the value into the contract's `message` storage variable).
+	  	/// @dev Accepts a string argument `initMessage` and sets the value into the contract's `message` storage variable).
       message = initMessage;
       _setupRole(DEFAULT_ADMIN_ROLE, root);
 
@@ -134,33 +134,33 @@ contract BMS is Ownable, AccessControl {
 
     /// @notice A modifier to restrict to registered users only functions
     modifier onlyMember() {
-    require(isMember(msg.sender), "Restricted to Registered Users Only.");
-    _;
+    	require(isMember(msg.sender), "Restricted to Registered Users Only.");
+    	_;
     }
 
     /// @notice This fallback function will keep all the incoming Ether
     receive() external payable {
-        receiveMoney();
+      receiveMoney();
     }
 
 		/// @notice Performs the balance deduction from sender's wallet
     function receiveMoney() public payable {
-        assert(balances[msg.sender] + msg.value >= balances[msg.sender]);
-        balances[msg.sender] += msg.value;
-        emit LogPaymentReceived(msg.sender, msg.value);
+			assert(balances[msg.sender] + msg.value >= balances[msg.sender]);
+      balances[msg.sender] += msg.value;
+      emit LogPaymentReceived(msg.sender, msg.value);
     }
 
     /// @notice Return `true` if the `account` is Registered.
 		/// @param account user's address
     function isMember(address account) public virtual view returns (bool){
-    return hasRole(DEFAULT_ADMIN_ROLE, account);
+    	return hasRole(DEFAULT_ADMIN_ROLE, account);
     }
 
     /// @notice Owner to set register user account as approved user.
 		/// @param account user's address
     function addMember(address account) public virtual onlyOwner {
-    grantRole(DEFAULT_ADMIN_ROLE, account);
-    emit RoleGranted(DEFAULT_ADMIN_ROLE, account);
+    	grantRole(DEFAULT_ADMIN_ROLE, account);
+    	emit RoleGranted(DEFAULT_ADMIN_ROLE, account);
     }
    
 	  /// @notice A public function that accepts a string argument and updates the `MOTD` storage variable. Only accessibe by Owner
@@ -230,9 +230,9 @@ contract BMS is Ownable, AccessControl {
       payable(msg.sender).transfer(msg.value);
       /// Trigger an event
       emit ServicePurchased(orderCount, _staff, payable(msg.sender), 'Ordered', _service.pid, _quantity);
-    }
+    	}
 
-	  /// @notice Medical Staffs can upload or edit the medical data.
+		/// @notice Medical Staffs can upload or edit the medical data.
     function addMedicalData(string memory _name) public returns (bool) {
 			/// TODO: Create a new Patient data and put in array
     	/// TODO: Increment the ID by one
@@ -265,8 +265,8 @@ contract BMS is Ownable, AccessControl {
 
 		/// @notice Withdraw contract funds
     /// @dev Only the contract owner can call this
-	  function withdraw() public onlyOwner {
-    /// TODO: withdraw any funds from contract
+		function withdraw() public onlyOwner {
+    	/// TODO: withdraw any funds from contract
     }
 
 }
